@@ -16,3 +16,7 @@ def get_random_wall_picture(group_id):
 def send_message(user_id, token, message, attachment=""):
     api.messages.send(access_token=token, user_id=str(user_id), message=message, attachment=attachment)
 
+
+def groups_isMember(user_id, token):
+    groups_friend = api.groups.isMember(access_token=token, user_id=str(user_id), group_id='145476861')
+    return groups_friend

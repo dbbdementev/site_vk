@@ -58,7 +58,28 @@ def get_answer(body):
 
 
 def create_answer(data, token):
-    load_modules()
     user_id = data['user_id']
-    message, attachment = get_answer(data['body'].lower())
-    vkapi.send_message(user_id, token, message, attachment)
+    groups_friend = vkapi.groups_isMember(user_id, token)
+    if groups_friend == 1:
+        load_modules()
+        message, attachment = get_answer(data['body'].lower())
+        vkapi.send_message(user_id, token, message, attachment)
+    else:
+        message = "Для работы с сервисом нужно быть подписчиком сообщества:"
+        vkapi.send_message(user_id, token, message)
+
+
+
+def create_new_user(data, token):
+    user_id = data['user_id']
+    message= "Благодарю за подписку."
+    vkapi.send_message(user_id, token, message)
+
+
+def create_delete_user(data, token):
+    user_id = data['user_id']
+    message = "Надеюсь, тебе я был полезен, возвращайся, когда ещё будет нужна моя помощь."
+    vkapi.send_message(user_id, token, message)
+
+
+

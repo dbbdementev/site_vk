@@ -22,3 +22,9 @@ def processing():
     elif data['type'] == 'message_new':
         messageHandler.create_answer(data['object'], token)
         return 'ok'
+    elif data['type'] == 'group_join':
+        messageHandler.create_new_user(data['object'], token)
+        return 'ok'
+    elif data['type'] == 'group_leave':
+        messageHandler.create_delete_user(data['object'], token)
+        return 'ok'
