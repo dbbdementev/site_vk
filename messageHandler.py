@@ -28,11 +28,12 @@ def damerau_levenshtein_distance(s1, s2):
     return d[lenstr1 - 1, lenstr2 - 1]
 
 
-def load_modules():
+def load_modules(acces_command):
     files = os.listdir("mysite/commands")
     modules = filter(lambda x: x.endswith('.py'), files)
     for m in modules:
-        importlib.import_module("commands." + m[0:-3])
+        if acces_command == m[0:-3]:
+            importlib.import_module("commands." + m[0:-3])
 
 
 def get_answer(body):
@@ -57,11 +58,11 @@ def get_answer(body):
     return message, attachment
 
 
-def create_answer(data, token):
+def create_answer(data, token,acces_command):
     user_id = data['user_id']
     groups_friend = vkapi.groups_isMember(user_id, token)
     if groups_friend == 1:
-        load_modules()
+        load_modules(acces_command)
         message, attachment = get_answer(data['body'].lower())
         vkapi.send_message(user_id, token, message, attachment)
     else:

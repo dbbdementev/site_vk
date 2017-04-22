@@ -19,7 +19,7 @@ def processing():
         if data['type'] == 'confirmation':
             return confirmation_token[data['secret']]
         elif data['type'] == 'message_new':
-            messageHandler.create_answer(data['object'], token[data['secret']])
+            messageHandler.create_answer(data['object'], token[data['secret']], acces_command[data['secret']])
             return 'ok'
         elif data['type'] == 'group_join':
             messageHandler.create_new_user(data['object'], token[data['secret']])
@@ -27,5 +27,7 @@ def processing():
         elif data['type'] == 'group_leave':
             messageHandler.create_delete_user(data['object'], token[data['secret']])
             return 'ok'
+        else:
+            return 'There is no such type of event'
     else:
         return 'not secret'
