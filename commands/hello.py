@@ -1,9 +1,10 @@
 import command_system
 
 
-def hello():
-   message = 'Привет, друг!\nЯ новый чат-бот.'
-   return message, ''
+def hello(user_id):
+    message = 'Привет, друг!\nЯ новый чат-бот.'
+    return message, ''
+
 
 hello_command = command_system.Command()
 

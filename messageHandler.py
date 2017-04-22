@@ -39,7 +39,7 @@ def load_modules(acces_commands):
 
 
 # ответ пользователю, при запросе команды
-def get_answer(body):
+def get_answer(body, user_id):
     message = "Прости, я бот, не понимаю тебя. Напиши 'помощь', чтобы узнать мои команды"
     attachment = ''
     distance = len(body)
@@ -53,10 +53,10 @@ def get_answer(body):
                 command = c
                 key = k
                 if distance == 0:
-                    message, attachment = c.process()
+                    message, attachment = c.process(user_id)
                     return message, attachment
     if distance < len(body) * 0.4:
-        message, attachment = command.process()
+        message, attachment = command.process(user_id)
         message = 'Я понял ваш запрос как "%s"\n\n' % key + message
     return message, attachment
 
@@ -67,7 +67,7 @@ def create_answer(data, token, acces_commands, group_id, groups_link):
     groups_friend = vkapi.groups_isMember(user_id, token, group_id)
     if groups_friend == 1:
         load_modules(acces_commands)
-        message, attachment = get_answer(data['body'].lower())
+        message, attachment = get_answer(data['body'].lower(), user_id)
         vkapi.send_message(user_id, token, message, attachment)
     else:
         message = "Для работы с ботом нужно быть подписчиком сообщества: " + groups_link
