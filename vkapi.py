@@ -19,6 +19,11 @@ def send_message(user_id, token, message, attachment=""):
     api.messages.send(access_token=token, user_id=str(user_id), message=message, attachment=attachment)
 
 
+# сообщение отправляется нескольким пользователям
+def send_messages(user_id, token, message, attachment=""):
+    api.messages.send(access_token=token, user_ids=str(user_id), message=message, attachment=attachment)
+
+
 # запрос, о том состоит пользователь в группе или нет
 def groups_isMember(user_id, token, group_id):
     groups_friend = api.groups.isMember(access_token=token, user_id=str(user_id), group_id=group_id)

@@ -2,6 +2,8 @@ import vkapi
 import os
 import importlib
 from command_system import command_list
+from commands.chat import chat_user_new
+from commands.chat import chat_message
 
 
 # определение погрешности(ошибок) в сообщении пользователя
@@ -64,14 +66,18 @@ def get_answer(body, user_id):
 # сообщение пользователю, когда он пытается написать боту не подписавшись
 def create_answer(data, token, acces_commands, group_id, groups_link):
     user_id = data['user_id']
-    groups_friend = vkapi.groups_isMember(user_id, token, group_id)
-    if groups_friend == 1:
-        load_modules(acces_commands)
-        message, attachment = get_answer(data['body'].lower(), user_id)
+    if user_id in chat_user_new('result'):  # проверка, является ли юзер участником чата
+        user_id, message, attachment = chat_message(data['user_id'], data['body'])
         vkapi.send_message(user_id, token, message, attachment)
-    else:
-        message = "Для работы с ботом нужно быть подписчиком сообщества: " + groups_link
-        vkapi.send_message(user_id, token, message)
+    else:  # проверка юзера, является ли участником группы
+        groups_friend = vkapi.groups_isMember(user_id, token, group_id)
+        if groups_friend == 1:
+            load_modules(acces_commands)
+            message, attachment = get_answer(data['body'].lower(), user_id)
+            vkapi.send_message(user_id, token, message, attachment)
+        else:
+            message = "Для работы с ботом нужно быть подписчиком сообщества: " + groups_link
+            vkapi.send_message(user_id, token, message)
 
 
 # сообщение пользователю, когда он подписывается
