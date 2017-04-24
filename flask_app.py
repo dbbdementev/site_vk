@@ -15,10 +15,10 @@ def processing():
     data = json.loads(request.data)
     if 'type' not in data.keys():
         return 'not vk'
+    if data['type'] == 'confirmation' and data['group_id'] in confirmation_token:
+        return confirmation_token[data['group_id']]
     if data['secret'] in token:
-        if data['type'] == 'confirmation':
-            return confirmation_token[data['secret']]
-        elif data['type'] == 'message_new':
+        if data['type'] == 'message_new':
             messageHandler.create_answer(data['object'],
                                          token[data['secret']],
                                          acces_commands[data['secret']],

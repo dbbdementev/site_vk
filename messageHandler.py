@@ -94,5 +94,5 @@ def create_new_user(data, token, acces_commands):
 def create_delete_user(data, token, acces_commands):
     if 'create_delete_user' in acces_commands:
         user_id = data['user_id']
-        message = "Надеюсь, я тебе был полезен, возвращайся, когда ещё будет нужна моя помощь."
+        message = "Надеюсь, я был тебе полезен, возвращайся, когда ещё будет нужна моя помощь."
         vkapi.send_message(user_id, token, message)
