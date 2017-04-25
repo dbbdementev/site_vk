@@ -1,6 +1,7 @@
 import vkapi
 import os
 import importlib
+import sqlite3
 from command_system import command_list
 from commands.chat import chat_user_new
 from commands.chat import chat_message
@@ -67,14 +68,19 @@ def get_answer(body, user_id):
 def create_answer(data, token, acces_commands, group_id, groups_link):
     user_id = data['user_id']
     if user_id in chat_user_new('result'):  # проверка, является ли юзер участником чата
-        user_id, message, attachment = chat_message(data['user_id'], data['body'])
+        user_id, message, attachment = chat_message(data['user_id'], data, token)
         vkapi.send_message(user_id, token, message, attachment)
     else:  # проверка юзера, является ли участником группы
         groups_friend = vkapi.groups_isMember(user_id, token, group_id)
         if groups_friend == 1:
-            load_modules(acces_commands)
-            message, attachment = get_answer(data['body'].lower(), user_id)
-            vkapi.send_message(user_id, token, message, attachment)
+            if black_list(user_id):  # проверка на черный список
+                message = 'Вы в черном списке'
+                attachment = ''
+                vkapi.send_message(user_id, token, message, attachment)
+            else:
+                load_modules(acces_commands)
+                message, attachment = get_answer(data['body'].lower(), user_id)
+                vkapi.send_message(user_id, token, message, attachment)
         else:
             message = "Для работы с ботом нужно быть подписчиком сообщества: " + groups_link
             vkapi.send_message(user_id, token, message)
@@ -96,3 +102,16 @@ def create_delete_user(data, token, acces_commands):
         user_id = data['user_id']
         message = "Надеюсь, я был тебе полезен, возвращайся, когда ещё будет нужна моя помощь."
         vkapi.send_message(user_id, token, message)
+
+
+# проверка на вхождение в черный список
+def black_list(user_id):
+    con = sqlite3.connect('mysite/black_list.db')
+    cur = con.cursor()
+    cur.execute("SELECT id_users_black FROM black_users WHERE id_users_black={id}".format(id=user_id))
+    if cur.fetchall():
+        cur.close()
+        con.close()
+        return True
+    else:
+        return False

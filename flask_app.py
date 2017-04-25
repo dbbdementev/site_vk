@@ -1,6 +1,7 @@
 from flask import Flask, request, json
 from settings import *
 import messageHandler
+import hashlib
 
 app = Flask(__name__)
 
@@ -15,25 +16,26 @@ def processing():
     data = json.loads(request.data)
     if 'type' not in data.keys():
         return 'not vk'
-    if data['type'] == 'confirmation' and data['group_id'] in confirmation_token:
-        return confirmation_token[data['group_id']]
-    if data['secret'] in token:
+    if data['type'] == 'confirmation' and hashlib.md5(bytes(str(data['group_id']), 'cp1251')).hexdigest() in confirmation_token:
+        return confirmation_token[hashlib.md5(bytes(str(data['group_id']), 'cp1251')).hexdigest()]
+    if hashlib.md5(bytes(data['secret'], 'cp1251')).hexdigest() in token:
+        secret = hashlib.md5(bytes(data['secret'], 'cp1251')).hexdigest()
         if data['type'] == 'message_new':
             messageHandler.create_answer(data['object'],
-                                         token[data['secret']],
-                                         acces_commands[data['secret']],
-                                         groups_id[data['secret']],
-                                         groups_link[data['secret']])
+                                         token[secret],
+                                         acces_commands[secret],
+                                         groups_id[secret],
+                                         groups_link[secret])
             return 'ok'
         elif data['type'] == 'group_join':
             messageHandler.create_new_user(data['object'],
-                                           token[data['secret']],
-                                           acces_commands[data['secret']])
+                                           token[secret],
+                                           acces_commands[secret])
             return 'ok'
         elif data['type'] == 'group_leave':
             messageHandler.create_delete_user(data['object'],
-                                              token[data['secret']],
-                                              acces_commands[data['secret']])
+                                              token[secret],
+                                              acces_commands[secret])
             return 'ok'
         else:
             return 'There is no such type of event'
