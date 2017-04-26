@@ -2,6 +2,7 @@ import vkapi
 import os
 import importlib
 import sqlite3
+import datetime
 from command_system import command_list
 from commands.chat import chat_user_new
 from commands.chat import chat_message
@@ -73,8 +74,9 @@ def create_answer(data, token, acces_commands, group_id, groups_link):
     else:  # проверка юзера, является ли участником группы
         groups_friend = vkapi.groups_isMember(user_id, token, group_id)
         if groups_friend == 1:
-            if black_list(user_id):  # проверка на черный список
-                message = 'Вы в черном списке'
+            time_black = black_list(user_id)
+            if time_black:  # проверка на черный список
+                message = 'Вы в черном списке ещё на ' + str(time_black)
                 attachment = ''
                 vkapi.send_message(user_id, token, message, attachment)
             else:
@@ -91,8 +93,7 @@ def create_new_user(data, token, acces_commands):
     if 'create_new_user' in acces_commands:
         user_id = data['user_id']
         data_user = vkapi.get_users(user_id)
-        message = data_user[0][
-                      'first_name'] + ', ' + "благодарю Вас за подписку. Напишите 'помощь' для работы с ботом сообщества."
+        message = data_user[0]['first_name'] + ', ' + "благодарю Вас за подписку. Напишите 'помощь' для работы с ботом сообщества."
         vkapi.send_message(user_id, token, message)
 
 
@@ -108,10 +109,19 @@ def create_delete_user(data, token, acces_commands):
 def black_list(user_id):
     con = sqlite3.connect('mysite/black_list.db')
     cur = con.cursor()
-    cur.execute("SELECT id_users_black FROM black_users WHERE id_users_black={id}".format(id=user_id))
-    if cur.fetchall():
+    cur.execute(
+        "SELECT id_users_black,recording_date,expiration_date,quantity FROM black_users WHERE id_users_black={id}".format(
+            id=user_id))
+    result = cur.fetchone()
+    if result:
+        recording_date = datetime.datetime.today()
+        expiration_date = datetime.datetime.strptime(result[2].split('.')[0], "%Y-%m-%d %H:%M:%S")
+        if expiration_date > recording_date:
+            time_black = str(expiration_date - recording_date).split('.')[0]
+            return time_black
         cur.close()
         con.close()
-        return True
     else:
+        cur.close()
+        con.close()
         return False
