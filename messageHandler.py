@@ -34,41 +34,41 @@ def damerau_levenshtein_distance(s1, s2):
 
 
 # определение списка команд в папке commands, и фильтр .py
-def load_modules(acces_commands):
+def load_modules():
     files = os.listdir("mysite/commands")
     modules = filter(lambda x: x.endswith('.py'), files)
     for m in modules:
-        if m[0:-3] in acces_commands:
             importlib.import_module("commands." + m[0:-3])
 
 
 # ответ пользователю, при запросе команды
-def get_answer(body, user_id):
+def get_answer(body, user_id , token,acces_commands):
     message = "Прости, я бот, не понимаю тебя. Напиши 'помощь', чтобы узнать мои команды"
     attachment = ''
     distance = len(body)
     command = None
     key = ''
     for c in command_list:
-        for k in c.keys:
-            d = damerau_levenshtein_distance(body, k)
-            if d < distance:
-                distance = d
-                command = c
-                key = k
-                if distance == 0:
-                    message, attachment = c.process(user_id)
-                    return message, attachment
-    if distance < len(body) * 0.4:
-        message, attachment = command.process(user_id)
-        message = 'Я понял ваш запрос как "%s"\n\n' % key + message
+        if c.d in acces_commands:
+            for k in c.keys:
+                d = damerau_levenshtein_distance(body, k)
+                if d < distance:
+                    distance = d
+                    command = c
+                    key = k
+                    if distance == 0:
+                        message, attachment = c.process(user_id, token)
+                        return message, attachment
+        if distance < len(body) * 0.4:
+            message, attachment = command.process(user_id, token)
+            message = 'Я понял ваш запрос как "%s"\n\n' % key + message
     return message, attachment
 
 
 # сообщение пользователю, когда он пытается написать боту не подписавшись
 def create_answer(data, token, acces_commands, group_id, groups_link):
     user_id = data['user_id']
-    if user_id in chat_user_new('result'):  # проверка, является ли юзер участником чата
+    if user_id in chat_user_new('result',token):  # проверка, является ли юзер участником чата
         user_id, message, attachment = chat_message(data['user_id'], data, token)
         vkapi.send_message(user_id, token, message, attachment)
     else:  # проверка юзера, является ли участником группы
@@ -80,8 +80,8 @@ def create_answer(data, token, acces_commands, group_id, groups_link):
                 attachment = ''
                 vkapi.send_message(user_id, token, message, attachment)
             else:
-                load_modules(acces_commands)
-                message, attachment = get_answer(data['body'].lower(), user_id)
+                load_modules()
+                message, attachment = get_answer(data['body'].lower(), user_id, token,acces_commands)
                 vkapi.send_message(user_id, token, message, attachment)
         else:
             message = "Для работы с ботом нужно быть подписчиком сообщества: " + groups_link
@@ -89,20 +89,22 @@ def create_answer(data, token, acces_commands, group_id, groups_link):
 
 
 # сообщение пользователю, когда он подписывается
-def create_new_user(data, token, acces_commands):
+def create_new_user(data, token, acces_commands, group_id):
     if 'create_new_user' in acces_commands:
-        user_id = data['user_id']
-        data_user = vkapi.get_users(user_id)
-        message = data_user[0]['first_name'] + ', ' + "благодарю Вас за подписку. Напишите 'помощь' для работы с ботом сообщества."
-        vkapi.send_message(user_id, token, message)
+        if vkapi.message_resolution(data['user_id'], group_id, token) == 1:
+            user_id = data['user_id']
+            data_user = vkapi.get_users(user_id)
+            message = data_user[0]['first_name'] + ', ' + "благодарю Вас за подписку. Напишите 'помощь' для работы с ботом сообщества."
+            vkapi.send_message(user_id, token, message)
 
 
 # сообщение пользователю, когда он отписывается
-def create_delete_user(data, token, acces_commands):
+def create_delete_user(data, token, acces_commands, group_id):
     if 'create_delete_user' in acces_commands:
-        user_id = data['user_id']
-        message = "Надеюсь, я был тебе полезен, возвращайся, когда ещё будет нужна моя помощь."
-        vkapi.send_message(user_id, token, message)
+        if vkapi.message_resolution(data['user_id'], group_id, token) == 1:
+            user_id = data['user_id']
+            message = "Надеюсь, я был тебе полезен, возвращайся, когда ещё будет нужна моя помощь."
+            vkapi.send_message(user_id, token, message)
 
 
 # проверка на вхождение в черный список

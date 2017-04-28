@@ -1,7 +1,7 @@
 import command_system
 
 
-def info(user_id):
+def info(user_id, token):
     message = ''
     for c in command_system.command_list:
         message += c.keys[0] + ' - ' + c.description + '\n'
@@ -13,3 +13,5 @@ info_command = command_system.Command()
 info_command.keys = ['помощь', 'помоги', 'help']
 info_command.description = 'Покажу список команд'
 info_command.process = info
+info_command.d = 'info'
+

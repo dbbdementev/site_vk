@@ -18,3 +18,6 @@ class Command:
 
     def process(self):
         pass
+
+    def d(self):
+        pass
