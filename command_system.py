@@ -5,6 +5,7 @@ class Command:
     def __init__(self):
         self.__keys = []
         self.description = ''
+        self.access = ''
         command_list.append(self)
 
     @property

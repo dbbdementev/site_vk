@@ -38,18 +38,18 @@ def load_modules():
     files = os.listdir("mysite/commands")
     modules = filter(lambda x: x.endswith('.py'), files)
     for m in modules:
-            importlib.import_module("commands." + m[0:-3])
+        importlib.import_module("commands." + m[0:-3])
 
 
 # ответ пользователю, при запросе команды
-def get_answer(body, user_id , token,acces_commands):
+def get_answer(body, user_id, token, acces_commands):
     message = "Прости, я бот, не понимаю тебя. Напиши 'помощь', чтобы узнать мои команды"
     attachment = ''
     distance = len(body)
     command = None
     key = ''
     for c in command_list:
-        if c.d in acces_commands:
+        if c.access in acces_commands:
             for k in c.keys:
                 d = damerau_levenshtein_distance(body, k)
                 if d < distance:
@@ -57,10 +57,10 @@ def get_answer(body, user_id , token,acces_commands):
                     command = c
                     key = k
                     if distance == 0:
-                        message, attachment = c.process(user_id, token)
+                        message, attachment = c.process(user_id, token, acces_commands)
                         return message, attachment
         if distance < len(body) * 0.4:
-            message, attachment = command.process(user_id, token)
+            message, attachment = command.process(user_id, token, acces_commands)
             message = 'Я понял ваш запрос как "%s"\n\n' % key + message
     return message, attachment
 
@@ -68,7 +68,7 @@ def get_answer(body, user_id , token,acces_commands):
 # сообщение пользователю, когда он пытается написать боту не подписавшись
 def create_answer(data, token, acces_commands, group_id, groups_link):
     user_id = data['user_id']
-    if user_id in chat_user_new('result',token):  # проверка, является ли юзер участником чата
+    if user_id in chat_user_new('result', token):  # проверка, является ли юзер участником чата
         user_id, message, attachment = chat_message(data['user_id'], data, token)
         vkapi.send_message(user_id, token, message, attachment)
     else:  # проверка юзера, является ли участником группы
@@ -81,7 +81,7 @@ def create_answer(data, token, acces_commands, group_id, groups_link):
                 vkapi.send_message(user_id, token, message, attachment)
             else:
                 load_modules()
-                message, attachment = get_answer(data['body'].lower(), user_id, token,acces_commands)
+                message, attachment = get_answer(data['body'].lower(), user_id, token, acces_commands)
                 vkapi.send_message(user_id, token, message, attachment)
         else:
             message = "Для работы с ботом нужно быть подписчиком сообщества: " + groups_link

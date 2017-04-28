@@ -1,10 +1,11 @@
 import command_system
 
 
-def info(user_id, token):
+def info(user_id, token, acces_commands):
     message = ''
     for c in command_system.command_list:
-        message += c.keys[0] + ' - ' + c.description + '\n'
+        if c.access in acces_commands:
+            message += c.keys[0] + ' - ' + c.description + '\n'
     return message, ''
 
 
@@ -13,5 +14,4 @@ info_command = command_system.Command()
 info_command.keys = ['помощь', 'помоги', 'help']
 info_command.description = 'Покажу список команд'
 info_command.process = info
-info_command.d = 'info'
-
+info_command.access = 'info'
