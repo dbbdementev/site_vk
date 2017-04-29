@@ -11,6 +11,6 @@ def cool_pictures(user_id, token, acces_commands):
 cool_pictures_command = command_system.Command()
 
 cool_pictures_command.keys = ['фото', 'foto']
-cool_pictures_command.description = 'Пришлю красивую картинку'
+cool_pictures_command.description = 'пришлю картинку'
 cool_pictures_command.process = cool_pictures
 cool_pictures_command.access = 'cool_pictures'

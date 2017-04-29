@@ -1,34 +1,10 @@
-dict = {}
+import vk
+import random
 
-
-
-
-def x(user, token):
-    if token in dict:
-        list=dict[token]
-        list.append(user)
-        dict[token]=list
-    else:
-        list = []
-        list.append(user)
-        dict[token]=list
-
-    print(dict)
-
-
-
-
-def y(user,token):
-    if token in dict:
-        dict.pop(token)
-
-
-    print(dict)
-
-
-
-x('1g0', '6666')
-x('116', '777777777')
-x('1116', '6666')
-
-y('1g0','6666')
+session = vk.Session()
+api = vk.API(session, v=5.63)
+try:
+    r = api.messages.isMessagesFromGroupAllowed(access_token='c16521dbd31c34b3f0c9f6536546965b72507a482ba99e1922904f303f799d2c3b0c5a99f6c395b84a8f7', user_id=str('14567'), group_id=str('145476861'))
+    print(r)
+except:
+    pass

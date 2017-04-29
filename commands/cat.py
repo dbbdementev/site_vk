@@ -11,6 +11,6 @@ def cat(user_id, token, acces_commands):
 cat_command = command_system.Command()
 
 cat_command.keys = ['котик', 'кошка', 'кот', 'котенок', 'котяра', 'cat']
-cat_command.description = 'Пришлю картинку с котиком'
+cat_command.description = 'пришлю котика'
 cat_command.process = cat
 cat_command.access = 'cat'

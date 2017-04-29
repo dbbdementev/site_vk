@@ -15,7 +15,7 @@ def chat(user_id, token, acces_commands):
 chat_command = command_system.Command()
 
 chat_command.keys = ['чат']
-chat_command.description = 'Анонимный чат'
+chat_command.description = 'анонимный чат'
 chat_command.process = chat
 chat_command.access = 'chat'
 
@@ -43,8 +43,9 @@ def chat_user_new(code, token, user_id=''):
                 association_two_users('delete', user_id, token)
     if code == 'result':
         if token in chat_users_all:
-            return chat_users_all[token]
-        return chat_users_all
+            if user_id in chat_users_all[token]:
+                return True
+        return False
     if code == 'chat statistics':
         if token in chat_users_all:
             return len(chat_users_all[token])

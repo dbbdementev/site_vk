@@ -24,20 +24,20 @@ def processing():
             messageHandler.create_answer(data['object'],
                                          token[secret],
                                          acces_commands[secret],
-                                         groups_id[secret],
+                                         data['group_id'],
                                          groups_link[secret])
             return 'ok'
         elif data['type'] == 'group_join':
             messageHandler.create_new_user(data['object'],
                                            token[secret],
                                            acces_commands[secret],
-                                           groups_id[secret])
+                                           data['group_id'])
             return 'ok'
         elif data['type'] == 'group_leave':
             messageHandler.create_delete_user(data['object'],
                                               token[secret],
                                               acces_commands[secret],
-                                              groups_id[secret])
+                                              data['group_id'])
             return 'ok'
         else:
             return 'There is no such type of event'

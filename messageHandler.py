@@ -6,6 +6,8 @@ import datetime
 from command_system import command_list
 from commands.chat import chat_user_new
 from commands.chat import chat_message
+from commands.congratulation import congratulation_new
+from commands.congratulation import congratulation_message
 
 
 # определение погрешности(ошибок) в сообщении пользователя
@@ -68,8 +70,12 @@ def get_answer(body, user_id, token, acces_commands):
 # сообщение пользователю, когда он пытается написать боту не подписавшись
 def create_answer(data, token, acces_commands, group_id, groups_link):
     user_id = data['user_id']
-    if user_id in chat_user_new('result', token):  # проверка, является ли юзер участником чата
+    if chat_user_new('result', token, user_id):  # проверка, является ли юзер участником чата
         user_id, message, attachment = chat_message(data['user_id'], data, token)
+        vkapi.send_message(user_id, token, message, attachment)
+    elif congratulation_new(token, user_id, 'result'):  # проверка юзера на отправку поздравления другу
+        attachment=''
+        message = congratulation_message(token, user_id, 'test id', data, group_id)
         vkapi.send_message(user_id, token, message, attachment)
     else:  # проверка юзера, является ли участником группы
         groups_friend = vkapi.groups_isMember(user_id, token, group_id)
