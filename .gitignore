@@ -50,3 +50,5 @@ Temporary Items
 /.idea
 /.idea
 /__pycache__
+/commands/__pycache__
+/база
