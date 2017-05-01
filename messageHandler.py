@@ -44,7 +44,8 @@ def load_modules():
 
 
 # ответ пользователю, при запросе команды
-def get_answer(body, user_id, token, acces_commands):
+def get_answer(body_s, user_id, token, acces_commands):
+    body = body_s.split(' ')[0]
     message = "Прости, я бот, не понимаю тебя. Напиши 'помощь', чтобы узнать мои команды"
     attachment = ''
     distance = len(body)
@@ -59,10 +60,10 @@ def get_answer(body, user_id, token, acces_commands):
                     command = c
                     key = k
                     if distance == 0:
-                        message, attachment = c.process(user_id, token, acces_commands)
+                        message, attachment = c.process(user_id, token, acces_commands, body_s)
                         return message, attachment
         if distance < len(body) * 0.4:
-            message, attachment = command.process(user_id, token, acces_commands)
+            message, attachment = command.process(user_id, token, acces_commands, body_s)
             message = 'Я понял ваш запрос как "%s"\n\n' % key + message
     return message, attachment
 

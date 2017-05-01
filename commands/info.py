@@ -1,7 +1,7 @@
 import command_system
 
 
-def info(user_id, token, acces_commands):
+def info(user_id, token, acces_commands, body):
     message = ''
     for c in command_system.command_list:
         if c.access in acces_commands:

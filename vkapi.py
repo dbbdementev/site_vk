@@ -32,7 +32,7 @@ def groups_isMember(user_id, token, group_id):
 
 # запрос данных о пользователе, без токена( с токеном общества не работает)
 def get_users(user_id):
-    data_user = api.users.get(user_id=str(user_id), fields='first_name')
+    data_user = api.users.get(user_id=str(user_id), fields='first_name,city')
     return data_user
 
 
@@ -44,6 +44,12 @@ def message_resolution(user_id, group_id, token):
     except:
         pass
 
+# определяем у кого в группе сегодня день рождение
 def birthday_users_groups(group_id):
-    user = api.groups.getMembers(offset=0, count=1000, group_id=group_id, fields='first_name,last_name,domain,bdate')
-    return len(user)
+    user = api.groups.getMembers(offset=0, count=1000, group_id=group_id, fields='first_name,bdate')
+    return user
+
+# возвращает название города
+def getcities(id_city):
+    city = api.database.getCitiesById(city_ids=id_city)
+    return city

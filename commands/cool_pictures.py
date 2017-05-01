@@ -2,7 +2,7 @@ import command_system
 import vkapi
 
 
-def cool_pictures(user_id, token, acces_commands):
+def cool_pictures(user_id, token, acces_commands, body):
     attachment = vkapi.get_random_wall_picture(-42564857)
     message = 'Вот тебе картинка :)\nВ следующий раз я пришлю другую.'
     return message, attachment

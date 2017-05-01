@@ -1,7 +1,7 @@
 import command_system
 
 
-def hello(user_id, token, acces_commands):
+def hello(user_id, token, acces_commands, body):
     message = 'Привет, друг!\nЯ новый чат-бот.'
     return message, ''
 

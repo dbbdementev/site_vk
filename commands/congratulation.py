@@ -6,7 +6,7 @@ from difflib import SequenceMatcher
 import time
 
 
-def congratulation(user_id, token, acces_commands):
+def congratulation(user_id, token, acces_commands, body):
     message = congratulation_new(token, user_id, 'new')
     return message, ''
 
@@ -112,18 +112,23 @@ def test_ids(token, id, group_id):
 def birthday_group(token, group_id):
     birth_day = time.localtime().tm_mday
     birth_month = time.localtime().tm_mon
-    message = vkapi.birthday_users_groups(group_id)
-    '''
+    user = vkapi.birthday_users_groups(group_id)
     message_name = ''
-    message_foto = ''
-    for users in user['users']:
+    quantity_birthday = 0
+    quantity_messages = 0
+    message = 'поздравляю тебя'
+    users_id =''
+    for users in user['items']:
         if 'bdate' in users:
             if birth_day == int(users['bdate'].split('.')[0]) and birth_month == int(users['bdate'].split('.')[1]):
-                message_name = message_name + users['first_name'] + ', '
+                quantity_birthday += 1
+                if vkapi.message_resolution(users['id'], group_id, token) == 1:
+                    users_id = users_id + str(users['id']) + ','
+                    quantity_messages += 1
             else:
                 continue
-    message = 'Поздравляем с Днем рождения участников группы:' + message_name + message_foto
-    '''
+    vkapi.send_messages(users_id, token, message, attachment="")
+    message = 'Сегодня день рождения празднуют: ' + str(quantity_birthday) + ' человек. Я отправил ' + str(quantity_birthday) + ' поздравлений'
     return message
 
 

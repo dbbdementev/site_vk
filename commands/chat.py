@@ -7,7 +7,7 @@ from difflib import SequenceMatcher
 
 
 # новый участник чата
-def chat(user_id, token, acces_commands):
+def chat(user_id, token, acces_commands, body):
     message = chat_user_new('new', token, user_id)
     return message, ''
 
