@@ -2,15 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5b156872-1010-45fc-9c25-8821dc0c7557" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/commands/chat.py" afterPath="$PROJECT_DIR$/commands/chat.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/commands/congratulation.py" afterPath="$PROJECT_DIR$/commands/congratulation.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/commands/weather.py" afterPath="$PROJECT_DIR$/commands/weather.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/flask_app.py" afterPath="$PROJECT_DIR$/flask_app.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/messageHandler.py" afterPath="$PROJECT_DIR$/messageHandler.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/settings.py" afterPath="$PROJECT_DIR$/settings.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vkapi.py" afterPath="$PROJECT_DIR$/vkapi.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/база/vk_test.py" afterPath="$PROJECT_DIR$/база/vk_test.py" />
     </list>
     <ignored path="site_vk.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -415,7 +408,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="840" y="0" width="840" height="1050" extended-state="0" />
+    <frame x="840" y="0" width="840" height="1050" extended-state="1" />
     <editor active="false" />
     <layout>
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23076923" sideWeight="0.54347825" order="0" side_tool="false" content_ui="combo" />

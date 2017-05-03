@@ -1,4 +1,4 @@
-# Windows image file caches
+﻿# Windows image file caches
 Thumbs.db
 ehthumbs.db
 
@@ -46,10 +46,9 @@ Network Trash Folder
 Temporary Items
 .apdisk
 /.gitattributes
-/.gitignore
-/.idea
-/.idea
 /__pycache__
 /commands/__pycache__
 /база
 /settings.py
+/.gitignore
+/.idea
