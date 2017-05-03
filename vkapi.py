@@ -39,15 +39,18 @@ def get_users(user_id):
 # запрос о том разрешено ли пользователю отправлять сообщения от группы
 def message_resolution(user_id, group_id, token):
     try:
-        resolution = api.messages.isMessagesFromGroupAllowed(access_token=token, user_id=str(user_id), group_id=str(group_id))
+        resolution = api.messages.isMessagesFromGroupAllowed(access_token=token, user_id=str(user_id),
+                                                             group_id=str(group_id))
         return resolution['is_allowed']
     except:
         pass
+
 
 # определяем у кого в группе сегодня день рождение
 def birthday_users_groups(group_id):
     user = api.groups.getMembers(offset=0, count=1000, group_id=group_id, fields='first_name,bdate')
     return user
+
 
 # возвращает название города
 def getcities(id_city):

@@ -75,7 +75,7 @@ def create_answer(data, token, acces_commands, group_id, groups_link):
         user_id, message, attachment = chat_message(data['user_id'], data, token)
         vkapi.send_message(user_id, token, message, attachment)
     elif congratulation_new(token, user_id, 'result'):  # проверка юзера на отправку поздравления другу
-        attachment=''
+        attachment = ''
         message = congratulation_message(token, user_id, 'test id', data, group_id)
         vkapi.send_message(user_id, token, message, attachment)
     else:  # проверка юзера, является ли участником группы
@@ -101,7 +101,8 @@ def create_new_user(data, token, acces_commands, group_id):
         if vkapi.message_resolution(data['user_id'], group_id, token) == 1:
             user_id = data['user_id']
             data_user = vkapi.get_users(user_id)
-            message = data_user[0]['first_name'] + ', ' + "благодарю Вас за подписку. Напишите 'помощь' для работы с ботом сообщества."
+            message = data_user[0][
+                          'first_name'] + ', ' + "благодарю Вас за подписку. Напишите 'помощь' для работы с ботом сообщества."
             vkapi.send_message(user_id, token, message)
 
 
@@ -112,6 +113,16 @@ def create_delete_user(data, token, acces_commands, group_id):
             user_id = data['user_id']
             message = "Надеюсь, я был тебе полезен, возвращайся, когда ещё будет нужна моя помощь."
             vkapi.send_message(user_id, token, message)
+
+
+# сообщение пользователю, когда он делает репост
+def wall_repost(data, token, acces_commands, group_id):
+    if 'wall_repost' in acces_commands:
+        if data['owner_id'] > 0:
+            if vkapi.message_resolution(data['owner_id'], group_id, token) == 1:
+                user_id = data['owner_id']
+                message = "Спасибо, что поделились новостью. "
+                vkapi.send_message(user_id, token, message)
 
 
 # проверка на вхождение в черный список

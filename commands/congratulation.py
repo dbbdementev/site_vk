@@ -53,7 +53,6 @@ def congratulation_message(token, user_id, code, data, group_id):
             if user_id in congratulation_users_id[token]:
                 if words_black(data['body']):  # исключаем маты
                     message = record_black_users(user_id)
-                    attachment = ''
                     del congratulation_users_id[token][user_id]
                     congratulation_new(token, user_id, 'delete')
                     return message
@@ -81,8 +80,7 @@ def congratulation_message(token, user_id, code, data, group_id):
         else:
             message = test_ids(token, str(data['body']), group_id)
             if message == 'ok':
-                congratulation_group_id = {}
-                congratulation_group_id[user_id] = data['body']
+                congratulation_group_id = {user_id: data['body']}
                 congratulation_users_id[token] = congratulation_group_id
                 return 'Теперь можете написать поздравление.'
             elif message == 'numeral':
@@ -113,11 +111,23 @@ def birthday_group(token, group_id):
     birth_day = time.localtime().tm_mday
     birth_month = time.localtime().tm_mon
     user = vkapi.birthday_users_groups(group_id)
-    message_name = ''
     quantity_birthday = 0
     quantity_messages = 0
-    message = 'поздравляю тебя'
-    users_id =''
+    message = 'Никаких сомнений быть не может:\n' \
+              'День рожденья — лучший день в году!\n' \
+              'Пусть он жизнь по полочкам разложит\n' \
+              'И поставит счастье на виду!\n' \
+              '\n' \
+              'Ближе к счастью — мир, любовь, удачу,\n' \
+              'Дружбу, доброту, надежду, веру.\n' \
+              'Где-то рядом — дом, машину, дачу,\n' \
+              'Деньги и успешную карьеру!\n' \
+              '\n' \
+              'Пусть судьба возьмет всё это вместе\n' \
+              'И назначит жизни долгий срок,\n' \
+              'Чтобы тебе жилось ещё лет двести\n' \
+              'Без проблем, волнений и тревог!\n'
+    users_id = ''
     for users in user['items']:
         if 'bdate' in users:
             if birth_day == int(users['bdate'].split('.')[0]) and birth_month == int(users['bdate'].split('.')[1]):
@@ -127,7 +137,8 @@ def birthday_group(token, group_id):
                     quantity_messages += 1
             else:
                 continue
-    vkapi.send_messages(users_id, token, message, attachment="")
+    if users_id:
+        vkapi.send_messages(users_id, token, message, attachment="")
     message = 'Сегодня день рождения празднуют: ' + str(quantity_birthday) + ' человек. Я отправил ' + str(quantity_birthday) + ' поздравлений'
     return message
 

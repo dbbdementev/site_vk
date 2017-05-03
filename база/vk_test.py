@@ -4,7 +4,7 @@ import requests
 import time
 import datetime
 
-'''
+
 def translate(name_translate):
     transtable = (
         ("а", "a"),
@@ -47,7 +47,7 @@ def translate(name_translate):
 
 
 def g():
-    y = translate('москва')
+    y = translate('кемерово')
     with open('city.list.json', 'r', encoding='utf-8') as f:
         f = json.load(f)
         for i in range(54100):
@@ -67,7 +67,7 @@ def g():
                             time.strftime('%d.%m.%Y %H:%M', time.localtime(res['dt']))) + ' в городе: ' +
                         res['name'])
                     temperature=('температура: ' + str(res['main']['temp']) + ' гр.')
-                    cloud_cover=('облачность: ' + str(res['weather'][0]['description']))
+                    cloud_cover=('облачность: ' + str(res['weather'][0]['description'])+str(res['clouds']['all'])+ '%')
                     wind=('ветер: ' + str(res['wind']['speed']) + ' м/с ' + str(res['wind']['deg']))
                     pressure=('давление: ' + str(int(res['main']['pressure']) * 0.75) + ' мм рт.ст.')
                     humidity=('влажность: ' + str(res['main']['humidity']) + ' %')
@@ -78,7 +78,4 @@ def g():
 
 
 print(g())
-'''
 
-t='ggg '
-print(len(t.split(' ')))

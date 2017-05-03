@@ -72,7 +72,10 @@ def association_two_users(code, user_id, token):
             vkapi.send_message(str(couple_user_all[token][0]), token, message, attachment)
             couple_user_all.pop(token)
             return "Собеседник найден. Можете ему написать. Чтобы завершить беседу, напишите 'стоп'."
-        return "Вы добавлены в очередь поиска, мы скоро найдем Вам собеседника. Чтобы закончить чат, напишите 'стоп'."
+        con = chat_user_new('chat statistics', token)
+        return "Вы добавлены в очередь поиска, мы скоро найдем Вам собеседника.\nЧтобы закончить чат, напишите 'стоп'." \
+               "\nВ чате " + str(con) + " человек. Нас мало в группе. Пригласите своих друзей."
+
     if code == 'delete':
         if token in couple_user_all:
             couple_user = couple_user_all[token]

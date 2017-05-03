@@ -39,7 +39,13 @@ def processing():
                                               acces_commands[secret],
                                               data['group_id'])
             return 'ok'
+        elif data['type'] == 'wall_repost':
+            messageHandler.wall_repost(data['object'],
+                                              token[secret],
+                                              acces_commands[secret],
+                                              data['group_id'])
+            return 'ok'
         else:
-            return 'There is no such type of event'
+            return 'ok'
     else:
-        return 'not secret'
+        return 'ok\nnot secret'
