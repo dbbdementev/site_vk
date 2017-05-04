@@ -3,6 +3,7 @@ import os
 import importlib
 import sqlite3
 import datetime
+import black_list
 from command_system import command_list
 from commands.chat import chat_user_new
 from commands.chat import chat_message
@@ -62,9 +63,9 @@ def get_answer(body_s, user_id, token, acces_commands):
                     if distance == 0:
                         message, attachment = c.process(user_id, token, acces_commands, body_s)
                         return message, attachment
-        if distance < len(body) * 0.4:
-            message, attachment = command.process(user_id, token, acces_commands, body_s)
-            message = 'Я понял ваш запрос как "%s"\n\n' % key + message
+    if distance < len(body) * 0.4:
+        message, attachment = command.process(user_id, token, acces_commands, body_s)
+        message = 'Я понял ваш запрос как "%s"\n\n' % key + message
     return message, attachment
 
 
@@ -81,15 +82,20 @@ def create_answer(data, token, acces_commands, group_id, groups_link):
     else:  # проверка юзера, является ли участником группы
         groups_friend = vkapi.groups_isMember(user_id, token, group_id)
         if groups_friend == 1:
-            time_black = black_list(user_id)
+            time_black = black_list1(user_id)
             if time_black:  # проверка на черный список
                 message = 'Вы в черном списке ещё на ' + str(time_black)
                 attachment = ''
                 vkapi.send_message(user_id, token, message, attachment)
             else:
-                load_modules()
-                message, attachment = get_answer(data['body'].lower(), user_id, token, acces_commands)
-                vkapi.send_message(user_id, token, message, attachment)
+                if black_list.words_black(data['body']):  # исключаем маты
+                    message = black_list.record_black_users(user_id)
+                    attachment=''
+                    vkapi.send_message(user_id, token, message, attachment)
+                else:
+                    load_modules()
+                    message, attachment = get_answer(data['body'].lower(), user_id, token, acces_commands)
+                    vkapi.send_message(user_id, token, message, attachment)
         else:
             message = "Для работы с ботом нужно быть подписчиком сообщества: " + groups_link
             vkapi.send_message(user_id, token, message)
@@ -126,7 +132,7 @@ def wall_repost(data, token, acces_commands, group_id):
 
 
 # проверка на вхождение в черный список
-def black_list(user_id):
+def black_list1(user_id):
     con = sqlite3.connect('mysite/black_list.db')
     cur = con.cursor()
     cur.execute(

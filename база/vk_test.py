@@ -4,55 +4,22 @@ import requests
 import time
 import datetime
 
+key='trnsl.1.1.20170504T093040Z.f44827537f2d58b7.10a6ba219e8c06f9acb7958c15eed15fadcded10'
+def transfer(text):
+    result = requests.get('https://translate.yandex.net/api/v1.5/tr.json/translate?key={key}&text={text}&lang=en&'.format(key=key,text=text))
 
-def translate(name_translate):
-    transtable = (
-        ("а", "a"),
-        ("б", "b"),
-        ("в", "v"),
-        ("г", "g"),
-        ("д", "d"),
-        ("е", "e"),
-        ("ё", "yo"),
-        ("ж", "zh"),
-        ("з", "z"),
-        ("и", "i"),
-        ("й", "j"),
-        ("к", "k"),
-        ("л", "l"),
-        ("м", "m"),
-        ("н", "n"),
-        ("о", "o"),
-        ("п", "p"),
-        ("р", "r"),
-        ("с", "s"),
-        ("т", "t"),
-        ("у", "u"),
-        ("ф", "f"),
-        ("х", "h"),
-        ("ц", "ts"),
-        ("ч", "ch"),
-        ("ш", "sh"),
-        ("щ", "sch"),
-        ("ъ", "`"),
-        ("ы", "yi"),
-        ("ь", "'"),
-        ("э", "e"),
-        ("ю", "y"),
-        ("я", "ya"),
-    )
-    for symb_in, symb_out in transtable:
-        name_translate = name_translate.replace(symb_in, symb_out)
-    return name_translate
+    if result.status_code == 200:
+        res = result.json()
+        print(res['text'][0])
+        return res['text'][0]
 
 
 def g():
-    y = translate('кемерово')
+    y = transfer('бердск').lower()
     with open('city.list.json', 'r', encoding='utf-8') as f:
         f = json.load(f)
-        for i in range(54100):
+        for i in range(100000):
             if f[i]['name'].lower() == y:
-                print(f[i])
                 result = requests.get(
                     'http://api.openweathermap.org/data/2.5/weather?id={id}&lang=ru&units=metric&APPID=37dc4dc88a8c4bb5d4df66baae7377eb'.format(
                         id=f[i]['id']))
@@ -74,7 +41,6 @@ def g():
                     sunrise=('восход: ' + str(time.strftime('%H:%M', time.localtime(res['sys']['sunrise']))))
                     sunset=('закат: ' + str(time.strftime('%H:%M', time.localtime(res['sys']['sunset']))))
                     return city+'\n'+temperature+'\n'+cloud_cover+'\n'+wind+'\n'+pressure+'\n'+humidity+'\n'+sunrise+'\n'+sunset
-
 
 
 print(g())

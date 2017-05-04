@@ -68,6 +68,7 @@
       <option name="ignoredIdentifiers">
         <list>
           <option value="register_activate.admin.*" />
+          <option value="bool.*" />
         </list>
       </option>
     </inspection_tool>
