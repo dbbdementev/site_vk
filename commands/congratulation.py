@@ -50,7 +50,7 @@ def congratulation_message(token, user_id, code, data, group_id):
         if token in congratulation_users_id:
             if user_id in congratulation_users_id[token]:
                 if black_list.words_black(data['body']):  # исключаем маты
-                    message = black_list.record_black_users(user_id)
+                    message = black_list.record_black_users(user_id,token)
                     del congratulation_users_id[token][user_id]
                     congratulation_new(token, user_id, 'delete')
                     return message

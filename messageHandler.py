@@ -4,6 +4,7 @@ import importlib
 import sqlite3
 import datetime
 import black_list
+import hashlib
 from command_system import command_list
 from commands.chat import chat_user_new
 from commands.chat import chat_message
@@ -70,7 +71,7 @@ def get_answer(body_s, user_id, token, acces_commands):
 
 
 # сообщение пользователю, когда он пытается написать боту не подписавшись
-def create_answer(data, token, acces_commands, group_id, groups_link):
+def create_answer(data, token, acces_commands, group_id, group_link):
     user_id = data['user_id']
     if chat_user_new('result', token, user_id):  # проверка, является ли юзер участником чата
         user_id, message, attachment = chat_message(data['user_id'], data, token)
@@ -82,22 +83,22 @@ def create_answer(data, token, acces_commands, group_id, groups_link):
     else:  # проверка юзера, является ли участником группы
         groups_friend = vkapi.groups_isMember(user_id, token, group_id)
         if groups_friend == 1:
-            time_black = black_list1(user_id)
+            time_black = black_list1(user_id, group_id)
             if time_black:  # проверка на черный список
                 message = 'Вы в черном списке ещё на ' + str(time_black)
                 attachment = ''
                 vkapi.send_message(user_id, token, message, attachment)
             else:
                 if black_list.words_black(data['body']):  # исключаем маты
-                    message = black_list.record_black_users(user_id)
-                    attachment=''
+                    message = black_list.record_black_users(user_id, token)
+                    attachment = ''
                     vkapi.send_message(user_id, token, message, attachment)
                 else:
                     load_modules()
                     message, attachment = get_answer(data['body'].lower(), user_id, token, acces_commands)
                     vkapi.send_message(user_id, token, message, attachment)
         else:
-            message = "Для работы с ботом нужно быть подписчиком сообщества: " + groups_link
+            message = "Для работы с ботом нужно быть подписчиком сообщества: " + group_link
             vkapi.send_message(user_id, token, message)
 
 
@@ -107,8 +108,7 @@ def create_new_user(data, token, acces_commands, group_id):
         if vkapi.message_resolution(data['user_id'], group_id, token) == 1:
             user_id = data['user_id']
             data_user = vkapi.get_users(user_id)
-            message = data_user[0][
-                          'first_name'] + ', ' + "благодарю Вас за подписку. Напишите 'помощь' для работы с ботом сообщества."
+            message = data_user[0]['first_name'] + ', ' + "благодарю Вас за подписку. Напишите 'помощь' для работы с ботом сообщества."
             vkapi.send_message(user_id, token, message)
 
 
@@ -132,12 +132,13 @@ def wall_repost(data, token, acces_commands, group_id):
 
 
 # проверка на вхождение в черный список
-def black_list1(user_id):
-    con = sqlite3.connect('mysite/black_list.db')
+def black_list1(user_id, group_id):
+    group_id = hashlib.md5(bytes(str(group_id), 'cp1251')).hexdigest()
+    con = sqlite3.connect('mysite/main.db')
     cur = con.cursor()
     cur.execute(
-        "SELECT id_users_black,recording_date,expiration_date,quantity FROM black_users WHERE id_users_black={id}".format(
-            id=user_id))
+        "SELECT black_user_id,recording_date,expiration_date,quantity FROM black_users WHERE black_user_id=? AND group_id=?",
+        (user_id, group_id))
     result = cur.fetchone()
     if result:
         recording_date = datetime.datetime.today()

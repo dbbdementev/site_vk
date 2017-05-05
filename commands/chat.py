@@ -135,7 +135,7 @@ def chat_message(user_id, data, token=''):
         message = 'В чате: ' + str(chat_user_new('chat statistics', token)) + ' человек'
         return user_id, message, ''
     elif black_list.words_black(data['body']):  # исключаем маты
-        message_id = black_list.record_black_users(user_id)
+        message_id = black_list.record_black_users(user_id,token)
         if message_id == 'Вы добавлены в черный список.':
             if interlocutor(user_id, token):
                 message = 'Ваш собеседник заблокирован. Напишите "чат" для поиска другого.'
